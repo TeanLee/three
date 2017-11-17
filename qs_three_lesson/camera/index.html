@@ -10,5 +10,50 @@
   <canvas id="canvas" width="400" height="300" 
   style="border: 1px solid red;margin: 50px auto;display:block;"></canvas>
   <script src="./libs/three.min.js"></script>
+  <script>
+    // 相机有近又远， 可以看到3D的世界
+    // 相机拍摄场景， 输出到渲染的世界renderer
+  var camera, scene, renderer, canvas;
+  init();
+  function init () {
+    canvas = document.getElementById('canvas');
+
+    // 创建 3D 场景  最简单  只要new
+    scene = new THREE.Scene();
+    // 拍摄的角度  canvas 的比例，让场景和canvas等比例展现出来   后面是远近
+    // 第一个参数是相机辐射的角度  数值越大  辐射的范围更广  看到的东西会更小
+    // 改变第二个参数， 有可能会拉伸镜头， 使得拍出来的东西变形  实质上的物体还是那个物体
+    camera = new THREE.PerspectiveCamera(45, 400/300, 1, 10);
+    // 把camera 放在0, 0 点，也就是正中心点  把camera往画面后移出5个坐标
+    // 还可以改变第一个第二个参数， 比如改变第二个Y轴的大小，表示把相机往上移， 这个时候看到的是盒子的顶部
+    // 改变第一个参数， 也就是把相机往右移动， 这个时候看到的是盒子的右边
+    // 第三个参数定的是一个比例， 指的是，这个时候，canvas的大小是容器的5倍
+    camera.position.set(0, 0, 5);
+    scene.add(camera);
+
+    // 在场景中添加一个立方体, 每个形状都是一个mesh， geometry可以理解为骨骼， material可以理解为画皮， 构成了完整的形状
+    // mesh<-geometry+materia  设置长宽高  都一样就是正方体
+    var geometry = new THREE.CubeGeometry(1, 1, 1);
+    // 添加three自带的最简单的一种材质
+    var material = new THREE.MeshBasicMaterial({
+      color: 0xff0000,
+      // 参数表示，不要填充整个面，只填充骨骼
+      // wireframe: true
+    });
+    // cube 是一个可以填充的形状
+    var cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    renderer =  new THREE.WebGLRenderer({
+      // 将canvas交给renderer  一个渲染的容器
+      canvas: canvas,
+      // 平滑， 抗锯齿  输出的画面会进行优化，不会带毛边
+      antialias: true
+    });
+    // 设置renderer的样子
+    renderer.setSize(canvas.width, canvas.height);
+    renderer.render(scene, camera);
+  }
+  </script>
 </body>
 </html>
